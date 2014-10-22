@@ -1,4 +1,4 @@
-package com.machinelearning.PA2;
+package com.machinelearning.LogisticRegression;
 
 import java.util.ArrayList;
 
