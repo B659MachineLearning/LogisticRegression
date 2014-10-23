@@ -26,8 +26,11 @@ public class LogisticRegression {
 	}
 	
 	public static void parameterComputation(ArrayList<Example> ex){
+		double oldLikelyhood = 0.0;
+		double logLikelyhood =0.0;
 		for (int n = 0; n < numOfRuns; n++){
-			double checkDiff = 0.0;
+			double FCONV = 0.0;
+			
 			for (int i=0; i < ex.size(); i++){
 					double predictedValue = classifier(ex.get(i));
 					String classLabel = ex.get(i).getFeature(labelIndex);
@@ -41,13 +44,16 @@ public class LogisticRegression {
 //					for (int k =0;k<weights.length;k++)
 //						System.out.print("\nWieght for"+"  " + i  +" is  "+" "+weights[k]);
 //					System.out.println();
+					logLikelyhood += (1-Integer.parseInt(classLabel)) * Math.log(1-classifier(ex.get(i))) + Integer.parseInt(classLabel) * classifier(ex.get(i));
+					
 			}
-			checkDiff = 1;
-			System.out.println("Difference : "+checkDiff);
-			if(checkDiff < 0.01){
+			FCONV = Math.abs(logLikelyhood -  oldLikelyhood)/(Math.abs(oldLikelyhood) + 1e-6);
+			System.out.println("Difference : "+FCONV);
+			if(FCONV < 1.5e-8){
 				System.out.println("Iterations Completed : "+n);
 				break;
 			}
+			oldLikelyhood = logLikelyhood;
 		}        
 	}
 
@@ -102,7 +108,7 @@ public class LogisticRegression {
 			else
 				predictedClassLabel = 1;
 			
-			System.out.println("prediction : "+predictedClassLabel+" actual : "+testExamples.get(e).getFeature(labelIndex));
+		//	System.out.println("prediction : "+predictedClassLabel+" actual : "+testExamples.get(e).getFeature(labelIndex));
 			if(Integer.parseInt(testExamples.get(e).getFeature(labelIndex)) != 1)
 				actualClassLabel = 0;
 			else
