@@ -1,4 +1,8 @@
 package com.machinelearning.LogisticRegression;
+/*
+ * Authors : Aniket Bhosale and Mayur Tare
+ * Description : This class implements Logistic Regression algorithm using ABSCONV conversion criterion.
+ */
 
 import java.util.ArrayList;
 
@@ -7,15 +11,18 @@ public class LogisticRegression {
 	public static double[] weights;
 	static double step = Double.parseDouble(Config.readConfig("stepSize"));
 	private static int numOfRuns = Integer.parseInt(Config.readConfig("iterations"));
+	private static double conversionVal = Double.parseDouble(Config.readConfig("conversionValue"));
 	
 	public static String label = null;
 	public static int labelIndex;
 	public static String trueClassLabel = "1";
 	
+	//Calculate Probability using sigmoid function
 	private static double sigmoid(double z){
-	        return 1 / (1 + Math.exp(-z)); 
+	    return 1 / (1 + Math.exp(-z)); 	
 	}
 	
+	//Return calculate (w.x)
 	public static double classifier(Example instance){
 		double linearSum = 0.0;
 		for (int j = 0; j<DataLoader.numberOfFeatures; j++){
@@ -26,10 +33,10 @@ public class LogisticRegression {
 	}
 	
 	public static void parameterComputation(ArrayList<Example> ex){
-		double oldLikelyhood = 0.0;
-		double logLikelyhood =0.0;
+		double oldLikelihood = 0.0;
+		double logLikelihood =0.0;
 		for (int n = 0; n < numOfRuns; n++){
-			double FCONV = 0.0;
+			double ABSFCONV = 0.0;
 			
 			for (int i=0; i < ex.size(); i++){
 					double predictedValue = classifier(ex.get(i));
@@ -41,19 +48,17 @@ public class LogisticRegression {
 							weights[j]= weights[j] + step * (Double.parseDouble(classLabel) - predictedValue) * Double.parseDouble(ex.get(i).getFeature(j));
 						}
 					}
-//					for (int k =0;k<weights.length;k++)
-//						System.out.print("\nWieght for"+"  " + i  +" is  "+" "+weights[k]);
-//					System.out.println();
-					logLikelyhood += (1-Integer.parseInt(classLabel)) * Math.log(1-classifier(ex.get(i))) + Integer.parseInt(classLabel) * classifier(ex.get(i));
-					
+					//Calculate Likelihood for current iteration
+					logLikelihood += (1-Integer.parseInt(classLabel)) * Math.log(1-classifier(ex.get(i))) + Integer.parseInt(classLabel) * Math.log(classifier(ex.get(i)));
 			}
-			FCONV = Math.abs(logLikelyhood -  oldLikelyhood)/(Math.abs(oldLikelyhood) + 1e-6);
-			System.out.println("Difference : "+FCONV);
-			if(FCONV < 1.5e-8){
+			//ABSFCONV : Convergence requires a small change in the log-likelihood function in subsequent iterations 
+			ABSFCONV = Math.abs(logLikelihood -  oldLikelihood);
+		
+			if(ABSFCONV < conversionVal){
 				System.out.println("Iterations Completed : "+n);
 				break;
 			}
-			oldLikelyhood = logLikelyhood;
+			oldLikelihood = logLikelihood;
 		}        
 	}
 
@@ -62,7 +67,6 @@ public class LogisticRegression {
 		double  predictedClass1=-1.0;
 		double  predictedClass0=-1.0;
 		int incorrectCount = 0;
-		int correctCount = 0;
 		int predictedClassLabel = -1;
 		int actualClassLabel = -1;
 		//Read the file name for training data from config file
@@ -77,27 +81,11 @@ public class LogisticRegression {
 		labelIndex = DataLoader.labels.indexOf(label);
 				
 		weights = new double [DataLoader.numberOfFeatures];
-		//System.out.println(weights);
 		
-		
-	//	System.out.println("Examples =" + trainExamples.size());
-		
-		
-		//DEBUG
-		/*for (int i =0; i<examples.size();i++){
-			for (int j =0; j<DataLoader.numberOfFeatures;j++){
-				
-				System.out.print(examples.get(i).getFeature(j));
-				
-			}
-			System.out.println();
-		}*/
-		
+		//Train the algorithm of Train Data Set
 		parameterComputation(trainExamples);
 		
-//		for(int l=0; l<weights.length;l++)
-//			System.out.println(weights[l]);
-		
+		//Check the algorithm predictions for Test Data set
 		for(int e = 0; e < testExamples.size();e++){
 			
 			predictedClass1 =  classifier(testExamples.get(e));
@@ -108,18 +96,13 @@ public class LogisticRegression {
 			else
 				predictedClassLabel = 1;
 			
-		//	System.out.println("prediction : "+predictedClassLabel+" actual : "+testExamples.get(e).getFeature(labelIndex));
 			if(Integer.parseInt(testExamples.get(e).getFeature(labelIndex)) != 1)
 				actualClassLabel = 0;
 			else
 				actualClassLabel = 1;
-			if(predictedClassLabel == actualClassLabel)
-				correctCount++;
-			else
+			if(!(predictedClassLabel == actualClassLabel))
 				incorrectCount++;
 		}
-		
-		System.out.println("Total Correct Predcitions = "+correctCount+" out of "+testExamples.size()+" examples");
 		System.out.println("Total Incorrect Predcitions = "+incorrectCount+" out of "+testExamples.size()+" examples");
 		
 	}
