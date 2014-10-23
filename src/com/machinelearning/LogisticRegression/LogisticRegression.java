@@ -38,9 +38,9 @@ public class LogisticRegression {
 							weights[j]= weights[j] + step * (Double.parseDouble(classLabel) - predictedValue) * Double.parseDouble(ex.get(i).getFeature(j));
 						}
 					}
-					for (int k =0;k<weights.length;k++)
-						System.out.print("\nWieght for"+"  " + i  +"is  "+" "+weights[k]);
-					System.out.println();
+//					for (int k =0;k<weights.length;k++)
+//						System.out.print("\nWieght for"+"  " + i  +" is  "+" "+weights[k]);
+//					System.out.println();
 			}
 			checkDiff = 1;
 			System.out.println("Difference : "+checkDiff);
