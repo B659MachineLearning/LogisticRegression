@@ -55,7 +55,7 @@ public class LogisticRegression {
 			ABSFCONV = Math.abs(logLikelihood -  oldLikelihood);
 		
 			if(ABSFCONV < conversionVal){
-				System.out.println("Iterations Completed : "+n);
+				System.out.println("Converged after "+n+" iterations for conversion value(ABSCONV) = "+conversionVal);
 				break;
 			}
 			oldLikelihood = logLikelihood;
@@ -67,6 +67,7 @@ public class LogisticRegression {
 		double  predictedClass1=-1.0;
 		double  predictedClass0=-1.0;
 		int incorrectCount = 0;
+		int correctCount = 0;
 		int predictedClassLabel = -1;
 		int actualClassLabel = -1;
 		//Read the file name for training data from config file
@@ -102,7 +103,10 @@ public class LogisticRegression {
 				actualClassLabel = 1;
 			if(!(predictedClassLabel == actualClassLabel))
 				incorrectCount++;
+			else
+				correctCount++;
 		}
+		System.out.println("Total Correct Predcitions = "+correctCount+" out of "+testExamples.size()+" examples");
 		System.out.println("Total Incorrect Predcitions = "+incorrectCount+" out of "+testExamples.size()+" examples");
 		
 	}
