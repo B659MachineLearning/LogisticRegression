@@ -52,7 +52,7 @@ public class DataLoader {
                for(int i = 0; i<numberOfFeatures; i++){
             	   currFeature = st.nextToken();
             	   //Find all categorical features
-            	   if(Integer.parseInt(currFeature)>1 && !catFeatures.contains(i))
+            	   if(Double.parseDouble(currFeature)>1 && !catFeatures.contains(i))
             		   catFeatures.add(i);
             	   ex.features.add(currFeature);
                }
