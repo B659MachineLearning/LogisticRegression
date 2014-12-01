@@ -35,3 +35,8 @@
 ehthumbs.db
 Thumbs.db
 /bin
+
+# Common files #
+######################
+*.csv
+*.xlsx

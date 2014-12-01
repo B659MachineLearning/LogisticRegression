@@ -90,6 +90,7 @@ public class LogisticRegression {
 		for(int e = 0; e < testExamples.size();e++){
 			
 			predictedClass1 =  classifier(testExamples.get(e));
+			System.out.println("Win Probability : "+predictedClass1);
 			predictedClass0 = 1 - predictedClass1;
 			
 			if(predictedClass0 > predictedClass1)
@@ -105,6 +106,7 @@ public class LogisticRegression {
 				incorrectCount++;
 			else
 				correctCount++;
+			System.out.println("Predicted : "+predictedClassLabel+" Actual : "+actualClassLabel);
 		}
 		System.out.println("Total Correct Predcitions = "+correctCount+" out of "+testExamples.size()+" examples");
 		System.out.println("Total Incorrect Predcitions = "+incorrectCount+" out of "+testExamples.size()+" examples");
